@@ -6,10 +6,7 @@ const food = require('../models/Food');
 router.post('/create', async (req, res) => {
     try {
         // destructuring object
-        const {
-            name,
-            prize
-        } = req.body;
+        const { name, prize } = req.body;
 
         // initialize models database (Food.js)
         const newFood = new food({
@@ -41,5 +38,59 @@ router.get('/', async (req, res) => {
         res.status(500).send('server eror')
     }
 })
-// export modul agar bisa dipakai di app.js
+
+router.get('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const getSpecificFood = await food.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        res.json(getSpecificFood)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('server error');
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const deleteUser = await food.destroy({
+            where: {
+                id: id
+            }
+        })
+        await deleteUser;
+        res.json(`data dengan id ${id} berhasil di hapus`)
+    } catch (error) {
+        console.log(err.message);
+        res.status(500).send('server error');
+    }
+});
+
+router.patch('/update/:id', async (req, res) => {
+    try {
+        const { name, prize } = req.body;
+        const id = req.params.id;
+
+        const updateUser = await food.update({
+            name,
+            prize
+        },
+        {
+            where : {id:id}
+        });
+
+        await updateUser;
+        res.json('Data Berhasil Di edit')
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send(err.message)
+    }
+})
+
+
 module.exports = router;
