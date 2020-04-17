@@ -32,6 +32,7 @@ router.get('/', async (req, res) => {
         const getFood = await food.findAll({})
 
         // respon
+        res.status(200)
         res.json(getFood)
     } catch (err) {
         console.log(err.message);
